@@ -9,10 +9,14 @@ import datetime
 from PIL import Image
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 co = cohere.Client('3gVJGdVuIoJj3ZN0CHHWtVJrVWCmWV7bNx7j1pdE')
 =======
 co = cohere.Client(os.environ.get('COHERE_API_KEY')))
 >>>>>>> 884b690 (fix: main.py)
+=======
+co = cohere.Client(os.environ.get('COHERE_API_KEY')))
+>>>>>>> 2588439 (fix: main.py)
 
 icon = Image.open('icon.png')
 
