@@ -8,7 +8,7 @@ import ast
 import datetime
 from PIL import Image
 
-co = cohere.Client(os.environ.get('COHERE_API_KEY'))
+co = cohere.Client('3gVJGdVuIoJj3ZN0CHHWtVJrVWCmWV7bNx7j1pdE')
 
 icon = Image.open('icon.png')
 
@@ -16,6 +16,9 @@ st.set_page_config(page_title='SoundFinance', page_icon=icon, layout='wide')
 st.title('SoundFinance')
 
 col1, col2 = st.columns(2)
+
+with col1:
+    st.image(icon, caption='Finanças Sólidas', width=300)
 
 price = csv.DictReader(open('precos.csv', 'r'))
 
@@ -46,7 +49,7 @@ with open('spoti.csv', 'r') as datafile:
         if i > 2499:
             break
 
-     feel = "negative"
+        feel = "negative"
         if int(mood[0]) > 40: #and percent_change > 0:
             feel = "positive"
         
@@ -91,12 +94,15 @@ if col1.button('Analyze'):
 
         response = co.generate(
             model='command',
-            prompt=f'If the following line is -1 the average mood is negative, if it is 1 the average mood is positive:\nIf the following line is -1 sell, if it is 1 buy:\n{v}',
+            prompt=f'If the following line is -1 the average mood is negative, if it is 1 the average mood is positive:\nIf the following line is -1 sell, if it is 1 buy\n{v}',
             max_tokens=100,
             temperature=0.7,
             k=0,
             stop_sequences=[],
             return_likelihoods='NONE')
+
+        response.generations[0].text.replace("negative", "*negative*")
+        response.generations[0].text.replace("positive", "*positive*")
 
         col1.markdown(f"### REPORT {str(date)}:\n{response.generations[0].text}")
         #st.write(f"{dates[i]} | {v}")
@@ -110,17 +116,14 @@ with col2:
 
     prices = prices.rename(columns={'Adj Close': 'Price'})
     st.line_chart(prices, x='Date', y='Price', ) #displays the table of data
-
 #st.subheader('ETF S&P 500')
 #prices = pd.read_csv('precos2.csv')
 #
 #st.line_chart(prices, x='Date', y='Adj Close') #displays the table of data
-
     moods = {} 
     for day, mood in days.items():
         moods[day] = mood[0] / 100.0
 
     st.subheader('Average mood')
     st.bar_chart(moods) #displays the table of data
-
 
